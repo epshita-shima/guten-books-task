@@ -1,11 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import BookCard from "../../components/BookCard";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Home = () => {
   const [allBooks, setAllBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(
+    localStorage.getItem("searchTerm") || ""
+  );
   const [genre, setGenre] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [nextUrl, setNextUrl] = useState(null);
@@ -23,9 +26,10 @@ const Home = () => {
   useEffect(() => {
     fetchBooks(currentPage);
   }, [currentPage]);
- 
 
   useEffect(() => {
+    localStorage.setItem("searchTerm", searchTerm);
+    localStorage.setItem("genre", genre);
     let result = allBooks;
     if (searchTerm) {
       result = result.filter((book) =>
@@ -44,7 +48,7 @@ const Home = () => {
   const genres = Array.from(
     new Set(allBooks.flatMap((book) => book.subjects || []))
   );
-  
+
   return (
     <div className="p-4">
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-4">
@@ -68,9 +72,19 @@ const Home = () => {
       </div>
 
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {filteredBooks.map((book) => (
-          <BookCard key={book.id} book={book} />
-        ))}
+        <AnimatePresence>
+          {filteredBooks.map((book) => (
+            <motion.div
+              key={book.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.5 }}
+            >
+              <BookCard book={book} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
       <div className="flex justify-center gap-4 mt-6">
         <button
