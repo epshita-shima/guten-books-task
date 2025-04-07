@@ -18,7 +18,6 @@ const BookCard = ({ book }) => {
       newList = [...wishlist, book.id];
     }
 
-    // Update wishlist in state and localStorage
     setWishlist(newList);
     localStorage.setItem("wishlist", JSON.stringify(newList));
   };
