@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import BookCard from "../../components/BookCard";
